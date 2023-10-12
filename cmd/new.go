@@ -4,8 +4,9 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	asset "lazy-api/asset/new"
-	"os/exec"
+	"lazy-api/asset"
+	module_asset "lazy-api/asset/module"
+	new_asset "lazy-api/asset/new"
 
 	"github.com/spf13/cobra"
 )
@@ -20,13 +21,13 @@ var newCmd = &cobra.Command{
 		projectName := args[0]
 		projectDirectory := projectName + "/"
 
-		initializeTemplate := asset.IntializeTemplate{
+		initializeTemplate := new_asset.IntializeTemplate{
 			ProjectName: projectName,
 		}
 		asset.Generate(initializeTemplate)
 		
-		mainTemplate := asset.MainTemplate{
-			Template: asset.MainFileContent,
+		mainTemplate := new_asset.MainTemplate{
+			Template: new_asset.MainFileContent,
 			Directory: projectDirectory,
 			FileName: "main.go",
 			Dependencies: []string{
@@ -40,22 +41,22 @@ var newCmd = &cobra.Command{
 		}
 		asset.Generate(mainTemplate)
 
-		defaultConfigTemplate := asset.ConfigTemplate{
-			Template: asset.ConfigDefaultFileContent,
+		defaultConfigTemplate := new_asset.ConfigTemplate{
+			Template: new_asset.ConfigDefaultFileContent,
 			Directory: projectDirectory + "src/common/config",
 			FileName: "defaults.config.go",
 		}
 		asset.Generate(defaultConfigTemplate)
 
-		envConfigTemplate := asset.ConfigTemplate{
-			Template: asset.EnvDefaultFileContent,
+		envConfigTemplate := new_asset.ConfigTemplate{
+			Template: new_asset.EnvDefaultFileContent,
 			Directory: projectDirectory + "src/common/config",
 			FileName: "env.config.go",
 		}
 		asset.Generate(envConfigTemplate)
 
-		envMongoTemplate := asset.ConfigTemplate{
-			Template: asset.MongoDefaultFileContent,
+		envMongoTemplate := new_asset.ConfigTemplate{
+			Template: new_asset.MongoDefaultFileContent,
 			Directory: projectDirectory + "src/common/config",
 			FileName: "mongo.config.go",
 			Tidy: true,
@@ -63,13 +64,22 @@ var newCmd = &cobra.Command{
 		asset.Generate(envMongoTemplate)
 
 
-		tidyCmdExec := exec.Command("go", "mod", "tidy")
-		tidyCmdExec.Dir = projectName
-		tidyErrExecErr := tidyCmdExec.Run()
+		// tidyCmdExec := exec.Command("go", "mod", "tidy")
+		// tidyCmdExec.Dir = projectName
+		// tidyErrExecErr := tidyCmdExec.Run()
 
-		if tidyErrExecErr != nil {
-			panic(tidyErrExecErr)
-		}	
+		// if tidyErrExecErr != nil {
+		// 	panic(tidyErrExecErr)
+		// }	
+
+		mainModuleTemplate := module_asset.MainModuleTemplate{
+			ModuleName: "user",
+			ProjectName: projectName,
+		}
+
+		asset.Generate(mainModuleTemplate)
+
+	
 
 	},
 

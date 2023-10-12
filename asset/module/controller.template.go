@@ -1,6 +1,7 @@
-package asset
+package module_asset
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
@@ -193,36 +194,30 @@ func Delete{Module}(c *fiber.Ctx) error {
 }`
 
 
-type MainTemplate struct {
+type ControllerTemplate struct {
 	Template string
 	Directory string
 	FileName string
-	Dependencies []string
+	ModuleName string
 	ProjectName string
-    ModuleName string
 }
 
-func (m MainTemplate) GenerateConfigFile() bool {
-    toUpperModuleName := strings.ToUpper(m.ModuleName)
-    toCapitalize := capitalize(m.ModuleName)
-
-	template := strings.Replace(strings.Replace(strings.Replace(strings.Replace(m.Template, "{module}", toCapitalize, -1), "{Module}", toCapitalize, -1), "{MODULE}", toUpperModuleName, -1), "{projectName}", m.ProjectName, -1)
-    
+func (m ControllerTemplate) GenerateConfigFile() bool {
+	toUpperModuleName := strings.ToUpper(m.ModuleName)
+	toCapitalize := capitalize(m.ModuleName)
+	toLowername := strings.ToLower(m.ModuleName)
+	template := strings.Replace(strings.Replace(strings.Replace(strings.Replace(m.Template, "{module}", toLowername, -1), "{Module}", toCapitalize, -1), "{MODULE}", toUpperModuleName, -1), "{projectName}", m.ProjectName, -1)
+	
+	fmt.Println(template)
+	paths := m.Directory + "/" + m.FileName 
+	fmt.Println(paths)
 	contents := []byte(template)
-	path := m.ProjectName + "/" + m.FileName
-
-	writeError := os.WriteFile(path, contents, os.ModePerm)
+	writeError := os.WriteFile(paths, contents, os.ModePerm)
 
 	if writeError != nil {
+		fmt.Println("log error")
 		panic(writeError)
 	}
 
 	return true
-}
-
-func capitalize(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-	return strings.ToUpper(s[:1]) + s[1:]
 }

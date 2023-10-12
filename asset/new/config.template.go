@@ -1,4 +1,4 @@
-package asset
+package new_asset
 
 import (
 	"fmt"
@@ -96,7 +96,7 @@ func (m ConfigTemplate) GenerateConfigFile() bool {
 	mkdirAllError := os.MkdirAll(m.Directory, os.ModePerm)
 
 	if mkdirAllError != nil {
-		log.Fatal(mkdirAllError)
+		panic(mkdirAllError)
 	}
 
 	configContents := []byte(m.Template)

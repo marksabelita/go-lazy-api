@@ -1,4 +1,4 @@
-package asset
+package new_asset
 
 import (
 	"fmt"
